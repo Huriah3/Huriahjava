@@ -1,0 +1,56 @@
+public class mainClient
+{
+    public static void main(String args[])
+    {
+        client ct =new client();
+        Thread t=new Thread(ct);
+        t.start();
+    }
+}
+
+
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.EOFException;
+import java.net.Socket;
+import java.util.Scanner;
+
+
+public class client implements Runnable
+{
+    public  void run()
+    {
+        try
+        {
+            Socket st=new Socket("localhost",5000);
+            Scanner sc=new Scanner(System.in);
+            System.out.println("Enter Bever code");
+            int code=sc.nextInt();
+            System.out.println("Emter The number of cups");
+            int we=sc.nextInt();
+            //read data 
+            DataOutputStream dos=new DataOutputStream(st.getOutputStream());
+            dos.writeInt(code);
+            dos.writeDouble(25);
+            dos.flush();
+            //recive
+            DataInputStream dis=new DataInputStream(st.getInputStream());
+            double wr=dis.readDouble();
+            String tea=dis.readUTF();
+            double sp=dis.readDouble();
+            
+            System.out.println("The Beverage code"+11);
+            System.out.println("The Beverage name"+tea);
+            System.out.println("The sale return"+sc);
+            
+        
+        }
+    
+        catch(Exception e)
+        {
+           System.out.println(e);
+        }
+    }
+}
+ 

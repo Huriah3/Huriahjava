@@ -1,0 +1,93 @@
+public class mainServer 
+{
+    public static void main(String args[])
+    {
+        Server s=new Server();
+        Thread t=new Thread(s);
+        t.start();
+        
+    }
+    
+}
+
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import static javafx.scene.input.KeyCode.T;
+import static javafx.scene.input.KeyCode.Y;
+
+public class Server implements Runnable
+{ 
+    {
+        try
+        {
+            String host="jdbc:derby://located:1527";
+            String unname="Huriah";
+            String pass="H6h6aly3h";
+            Connection con=DriverManager.getConnection(host,unname,pass);
+            ServerSocket ss=new ServerSocket(5000);
+            System.out.println("connection is ready");
+            while(true)
+            {
+                //accept client connection
+                Socket st=ss.accept();
+                //receive data from client
+                DataInputStream dis= new DataInputStream(st.getInputStream());
+                int ob=dis.readInt();
+                double amnt=dis.readDouble();
+                System.out.println("price=::"+pr);
+                System.out.println("cups=::"+cps);
+                
+                //do calculation
+                double cups=(7)*price;
+                double price=cups*(0.300);
+                       
+                
+                //send the results
+                DataOutputStream dos=new DataOutputStream(st.getOutputStream());
+                dos.writeDouble(cups);
+                dos.writeDouble(price);
+                //finding the price from the database
+                Statement smt=con.createStatement();
+                String (i)=("cups*price="+price);
+                smt.execute(i);
+                ResultSet rs=smt.getResultSet();
+                if(rs.next())
+                {
+                    
+                    double temp_m_va1=rs.getDouble("T");
+                    double u1=temp_pnt+cups;
+                    double u2=temp_m_va1+price;
+                    dos.writeDouble(u1);
+                    dos.writeDouble(u2);
+                    smt.executeUpdate("update ="+u1+","T="u2+"cups="+price");
+                    System.out.println("Recored has been updated on the database and sent to the client");
+                }
+                else
+                {
+                    dos.writeInt(price);
+                    System.out.println("");
+                }
+                dos.flush();
+                dos.close();
+                
+            }
+        }
+        catch(IOException ex)
+        {
+            System.out.print(ex);
+        }catch (SQLException ex){
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE,null,ex);
+        }
+    }
+}
